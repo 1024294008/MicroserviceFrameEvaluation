@@ -14,11 +14,9 @@ public class MSFEApplication implements CommandLineRunner {
     @Resource
     private ITestService testServiceImp;
 
-    @Resource
-    private MicroServiceResolver serviceDivider;
-
     @Override
     public void run(String... args) {
+        testServiceImp.test();
     }
 
     public static void main(String[] args) {
