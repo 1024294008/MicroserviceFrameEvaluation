@@ -1,6 +1,6 @@
 package cn.hp.service.impl;
 
-import cn.hp.entity.MavenModule;
+import cn.hp.entity.Module;
 import cn.hp.resolver.ModuleResolver;
 import cn.hp.service.ITestService;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +20,9 @@ public class TestServiceImpl implements ITestService {
 
     @Override
     public void test() {
-        List<MavenModule> mavenModules = moduleResolver.resolveModule(new File(projectPath));
-        for (MavenModule mavenModule: mavenModules) {
-            System.out.println(mavenModule);
+        List<Module> modules = moduleResolver.resolveModule(new File(projectPath));
+        for (Module module : modules) {
+            System.out.println(module);
         }
     }
 }
