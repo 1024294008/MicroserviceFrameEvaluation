@@ -3,6 +3,7 @@ package cn.hp.service.impl;
 import cn.hp.entity.Module;
 import cn.hp.resolver.ModuleResolver;
 import cn.hp.service.ITestService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,8 @@ public class TestServiceImpl implements ITestService {
 
     @Override
     public void test() {
+        Module module = new Module();
+        module.setLocation(new File(projectPath));
+        mavenService.resolveDependencyTree(new Module());
     }
 }

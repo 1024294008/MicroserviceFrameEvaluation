@@ -1,6 +1,7 @@
 package cn.hp.service.impl;
 
 import cn.hp.bean.MavenSetting;
+import cn.hp.entity.DependencyLog;
 import cn.hp.entity.Module;
 import cn.hp.service.IMavenService;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -13,7 +14,9 @@ import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class MavenService implements IMavenService {
@@ -38,4 +41,21 @@ public class MavenService implements IMavenService {
         if (null == process) return null;
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
+
+    public List<DependencyLog> resolveDependencyTree(Module module) {
+        BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree");
+        if (null == bufferedReader) return null;
+        List<DependencyLog> dependencyLogs = new ArrayList<>();
+        try {
+            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+                System.out.println(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }
