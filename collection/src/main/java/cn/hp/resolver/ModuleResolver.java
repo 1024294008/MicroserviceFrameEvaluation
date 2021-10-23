@@ -1,6 +1,6 @@
 package cn.hp.resolver;
 
-import cn.hp.entity.MavenModule;
+import cn.hp.entity.Module;
 import cn.hp.entity.PackageType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,66 +13,66 @@ import java.util.List;
 
 @Component
 public class ModuleResolver {
-    public List<MavenModule> resolveModule(File project) {
-        List<MavenModule> mavenModules = new ArrayList<>();
-        scanFile(project, mavenModules);
-        return mavenModules;
+    public List<Module> resolveModule(File project) {
+        List<Module> modules = new ArrayList<>();
+        scanFile(project, modules);
+        return modules;
     }
 
-    private void scanFile(File file, List<MavenModule> mavenModules) {
+    private void scanFile(File file, List<Module> modules) {
         if (!file.exists()) return;
         if (file.isDirectory()) {
             File[] subFiles = file.listFiles();
             if (subFiles != null){
                 Boolean isModule = false;
-                MavenModule mavenModule = null;
+                Module module = null;
                 for (File subFile: subFiles){
                     if (subFile.isFile() && subFile.getName().equals("pom.xml")) {
                         isModule = true;
-                        mavenModule = extractMavenModuleFromPom(new File(file, "pom.xml"));
+                        module = extractMavenModuleFromPom(new File(file, "pom.xml"));
                         break;
                     }
                 }
                 if (isModule) {
-                    if (mavenModule.getPackageType() == PackageType.Pom) {
+                    if (module.getPackageType() == PackageType.Pom) {
                         for (File subFile: subFiles) {
-                            scanFile(subFile, mavenModules);
+                            scanFile(subFile, modules);
                         }
                     }
-                    mavenModules.add(mavenModule);
+                    modules.add(module);
                 }
             }
         }
     }
 
-    private MavenModule extractMavenModuleFromPom(File pomFile) {
-        MavenModule mavenModule = new MavenModule();
+    private Module extractMavenModuleFromPom(File pomFile) {
+        Module module = new Module();
         try {
             Document document = Jsoup.parse(pomFile, "utf-8");
 
             Elements groupIdElements = document.select("project > groupId");
             if (groupIdElements.size() > 0) {
-                mavenModule.setGroupId(groupIdElements.get(0).text());
+                module.setGroupId(groupIdElements.get(0).text());
             } else {
                 groupIdElements = document.select("project > parent > groupId");
                 if (groupIdElements.size() > 0) {
-                    mavenModule.setGroupId(groupIdElements.get(0).text());
+                    module.setGroupId(groupIdElements.get(0).text());
                 }
             }
 
-            mavenModule.setArtifactId(document.select("project > artifactId").get(0).text());
+            module.setArtifactId(document.select("project > artifactId").get(0).text());
 
             PackageType packageType = PackageType.Jar;
             Elements packageElements = document.select("project > packaging");
             if (packageElements.size() > 0
                     && packageElements.get(0).text().equals("pom"))
                 packageType = PackageType.Pom;
-            mavenModule.setPackageType(packageType);
+            module.setPackageType(packageType);
 
-            mavenModule.setLocation(pomFile);
+            module.setLocation(pomFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mavenModule;
+        return module;
     }
 }

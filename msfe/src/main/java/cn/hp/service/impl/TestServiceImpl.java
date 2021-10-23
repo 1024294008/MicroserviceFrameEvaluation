@@ -15,14 +15,13 @@ public class TestServiceImpl implements ITestService {
     @Resource
     private ModuleResolver moduleResolver;
 
+    @Resource
+    private MavenService mavenService;
+
     @Value("D:\\Projects\\dev\\microservice-frame-evaluation")
     private String projectPath;
 
     @Override
     public void test() {
-        List<Module> modules = moduleResolver.resolveModule(new File(projectPath));
-        for (Module module : modules) {
-            System.out.println(module);
-        }
     }
 }

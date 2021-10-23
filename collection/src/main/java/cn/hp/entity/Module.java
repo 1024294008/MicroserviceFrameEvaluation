@@ -9,7 +9,7 @@ import java.io.File;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MavenModule {
+public class Module {
     private String groupId;
     private String artifactId;
     private PackageType packageType;
