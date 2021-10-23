@@ -1,4 +1,4 @@
-package cn.hp.feature;
+package cn.hp.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

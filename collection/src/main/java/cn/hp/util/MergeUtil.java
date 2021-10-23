@@ -1,7 +1,7 @@
 package cn.hp.util;
 
 
-import cn.hp.feature.ServiceFeature;
+import cn.hp.entity.ServiceFeature;
 
 public class MergeUtil {
     public static ServiceFeature mergeServiceFeature(ServiceFeature serviceFeatureA, ServiceFeature serviceFeatureB) {

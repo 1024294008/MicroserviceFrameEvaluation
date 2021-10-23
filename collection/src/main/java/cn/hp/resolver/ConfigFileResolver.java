@@ -1,6 +1,6 @@
 package cn.hp.resolver;
 
-import cn.hp.feature.ServiceFeature;
+import cn.hp.entity.ServiceFeature;
 import cn.hp.util.MergeUtil;
 import cn.hp.util.YmlUtil;
 import org.springframework.stereotype.Service;
