@@ -45,6 +45,7 @@ public class MavenService implements IMavenService {
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
 
+    @Override
     public List<DependencyLog> resolveDependencyTree(Module module) {
         BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree");
         List<DependencyLog> dependencyLogs = convertDependencyLog(bufferedReader);
@@ -75,8 +76,14 @@ public class MavenService implements IMavenService {
                     dependencyLog = new DependencyLog();
                     dependencyLog.setGroupId(moduleStartMatcher.group(1));
                     dependencyLog.setArtifactId(moduleStartMatcher.group(2));
-                    dependencyLog.setDependencyNode(convertDependencyNode(dependencyLayers));
+
+                    DependencyNode dependencyNode = new DependencyNode();
+                    convertDependencyNode(dependencyLayers, dependencyNode);
+                    dependencyLog.setDependencyNode(dependencyNode);
+
                     dependencyLayers.clear();
+                    System.out.println(dependencyLog);
+                    System.out.println("======================");
                 } else if (moduleEndPattern.matcher(line).find() && moduleScanFlag) {
                     dependencyLogs.add(dependencyLog);
                     break;
@@ -97,8 +104,22 @@ public class MavenService implements IMavenService {
         return dependencyLogs;
     }
 
-    private DependencyNode convertDependencyNode(Queue<DependencyLayer> dependencyLayers) {
-
-        return null;
+    private void convertDependencyNode(Queue<DependencyLayer> dependencyLayers, DependencyNode parent) {
+        if (0 == dependencyLayers.size()) return;
+        List<DependencyNode> subDependencyNodes = new ArrayList<>();
+        DependencyLayer firstDependencyLayer = dependencyLayers.peek();
+        Boolean flag = true;
+        while (flag) {
+            DependencyLayer currentDependencyLayer = dependencyLayers.peek();
+            if (null != currentDependencyLayer) {
+                if (currentDependencyLayer.getLayer().equals(firstDependencyLayer.getLayer())) {
+                    dependencyLayers.poll();
+                    subDependencyNodes.add(new DependencyNode(currentDependencyLayer.getPackageName(), null));
+                } else if (currentDependencyLayer.getLayer() > firstDependencyLayer.getLayer()) {
+                    convertDependencyNode(dependencyLayers, subDependencyNodes.get(subDependencyNodes.size() - 1));
+                } else flag = false;
+            } else flag = false;
+        }
+        parent.setChildren(subDependencyNodes);
     }
 }
