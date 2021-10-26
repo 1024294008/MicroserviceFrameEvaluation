@@ -57,6 +57,18 @@ public class MavenService implements IMavenService {
         return dependencyLogs;
     }
 
+    @Override
+    public List<DependencyLog> resolveDependencyTreeIncludes(Module module, String packageName) {
+        BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree -Dverbose -Dincludes=" + packageName);
+        List<DependencyLog> dependencyLogs = convertDependencyLog(bufferedReader);
+        try {
+            if (null != bufferedReader) bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dependencyLogs;
+    }
+
     private List<DependencyLog> convertDependencyLog(BufferedReader bufferedReader) {
         if (null == bufferedReader) return null;
         List<DependencyLog> dependencyLogs = new ArrayList<>();
@@ -72,20 +84,21 @@ public class MavenService implements IMavenService {
                 if (moduleStartMatcher.find()) {
                     moduleScanFlag = true;
                     dependencyScanFlag = false;
-                    if (null != dependencyLog) dependencyLogs.add(dependencyLog);
+                    if (null != dependencyLog) {
+                        dependencyLogs.add(dependencyLog);
+                        DependencyNode dependencyNode = new DependencyNode();
+                        convertDependencyNode(dependencyLayers, dependencyNode);
+                        dependencyLog.setDependencyNode(dependencyNode);
+                    }
                     dependencyLog = new DependencyLog();
                     dependencyLog.setGroupId(moduleStartMatcher.group(1));
                     dependencyLog.setArtifactId(moduleStartMatcher.group(2));
-
+                    dependencyLayers.clear();
+                } else if (moduleEndPattern.matcher(line).find() && moduleScanFlag) {
+                    dependencyLogs.add(dependencyLog);
                     DependencyNode dependencyNode = new DependencyNode();
                     convertDependencyNode(dependencyLayers, dependencyNode);
                     dependencyLog.setDependencyNode(dependencyNode);
-
-                    dependencyLayers.clear();
-                    System.out.println(dependencyLog);
-                    System.out.println("======================");
-                } else if (moduleEndPattern.matcher(line).find() && moduleScanFlag) {
-                    dependencyLogs.add(dependencyLog);
                     break;
                 }
                 if (null != dependencyLog && line.startsWith("[INFO] " + dependencyLog.getGroupId() + ":" + dependencyLog.getArtifactId())) {
@@ -101,6 +114,7 @@ public class MavenService implements IMavenService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(dependencyLogs);
         return dependencyLogs;
     }
 

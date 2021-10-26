@@ -26,6 +26,7 @@ public class TestServiceImpl implements ITestService {
     public void test() {
         Module module = new Module();
         module.setLocation(new File(projectPath));
-        mavenService.resolveDependencyTree(new Module());
+//        mavenService.resolveDependencyTreeIncludes(module, "cn.hp.framedetect:collection");
+        mavenService.resolveDependencyTree(module);
     }
 }

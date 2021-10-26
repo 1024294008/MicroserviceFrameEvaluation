@@ -8,5 +8,5 @@ import java.util.List;
 public interface IMavenService {
     List<DependencyLog> resolveDependencyTree(Module module);
 
-//    List<DependencyLog> resolveDependencyTreeIncludes(Module module, String packageName);
+    List<DependencyLog> resolveDependencyTreeIncludes(Module module, String packageName);
 }
