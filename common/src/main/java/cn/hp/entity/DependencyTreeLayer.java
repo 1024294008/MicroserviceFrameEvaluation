@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DependencyLayer {
+public class DependencyTreeLayer {
     private Integer layer;
     private String packageName;
 }

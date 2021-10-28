@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class DependencyLog {
     private String groupId;
     private String artifactId;
-    private DependencyNode dependencyNode;
+    private DependencyTreeNode dependencyTreeNode;
 }

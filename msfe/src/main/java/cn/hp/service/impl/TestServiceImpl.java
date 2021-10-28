@@ -3,13 +3,11 @@ package cn.hp.service.impl;
 import cn.hp.entity.Module;
 import cn.hp.resolver.ModuleResolver;
 import cn.hp.service.ITestService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.List;
 
 @Service
 public class TestServiceImpl implements ITestService {
@@ -27,6 +25,6 @@ public class TestServiceImpl implements ITestService {
         Module module = new Module();
         module.setLocation(new File(projectPath));
 //        mavenService.resolveDependencyTreeIncludes(module, "cn.hp.framedetect:collection");
-        mavenService.resolveDependencyTree(module);
+//        mavenService.resolveDependencyTree(module);
     }
 }

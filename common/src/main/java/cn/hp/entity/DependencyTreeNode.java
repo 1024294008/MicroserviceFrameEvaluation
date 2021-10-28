@@ -9,7 +9,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DependencyNode {
+public class DependencyTreeNode {
     private String packageName;
-    private List<DependencyNode> children;
+    private List<DependencyTreeNode> children;
+
+    public DependencyTreeNode(String packageName) {
+        this.packageName = packageName;
+    }
 }

@@ -9,4 +9,6 @@ public interface IMavenService {
     List<DependencyLog> resolveDependencyTree(Module module);
 
     List<DependencyLog> resolveDependencyTreeIncludes(Module module, String packageName);
+
+    List<String> resolveUnusedDependencies(Module module);
 }

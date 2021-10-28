@@ -1,9 +1,9 @@
 package cn.hp.service.impl;
 
 import cn.hp.bean.MavenSetting;
-import cn.hp.entity.DependencyLayer;
+import cn.hp.entity.DependencyTreeLayer;
 import cn.hp.entity.DependencyLog;
-import cn.hp.entity.DependencyNode;
+import cn.hp.entity.DependencyTreeNode;
 import cn.hp.entity.Module;
 import cn.hp.service.IMavenService;
 import cn.hp.util.StrUtil;
@@ -69,6 +69,29 @@ public class MavenService implements IMavenService {
         return dependencyLogs;
     }
 
+    @Override
+    public List<String> resolveUnusedDependencies(Module module) {
+        BufferedReader bufferedReader = executeMavenCommand(module, "dependency:analyze");
+        List<String> unusedDependencies = new ArrayList<>();
+        if (null == bufferedReader) return unusedDependencies;
+        try {
+            Boolean scanFlag = false;
+            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+                if (line.trim().equals("[WARNING] Unused declared dependencies found:")) scanFlag = true;
+                if (scanFlag && line.trim().startsWith("[WARNING]")) {
+                    String[] sections = line.split("\\w+");
+                    if (sections.length >= 2) {
+                        unusedDependencies.add(sections[1]);
+                    }
+                }
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return unusedDependencies;
+    }
+
     private List<DependencyLog> convertDependencyLog(BufferedReader bufferedReader) {
         if (null == bufferedReader) return null;
         List<DependencyLog> dependencyLogs = new ArrayList<>();
@@ -76,7 +99,7 @@ public class MavenService implements IMavenService {
         Pattern moduleEndPattern = Pattern.compile("^\\[INFO] -+$");
         try {
             DependencyLog dependencyLog = null;
-            Queue<DependencyLayer> dependencyLayers = new LinkedList<>();
+            Queue<DependencyTreeLayer> dependencyTreeLayers = new LinkedList<>();
             Boolean moduleScanFlag = false;
             Boolean dependencyScanFlag = false;
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
@@ -86,26 +109,26 @@ public class MavenService implements IMavenService {
                     dependencyScanFlag = false;
                     if (null != dependencyLog) {
                         dependencyLogs.add(dependencyLog);
-                        DependencyNode dependencyNode = new DependencyNode();
-                        convertDependencyNode(dependencyLayers, dependencyNode);
-                        dependencyLog.setDependencyNode(dependencyNode);
+                        DependencyTreeNode dependencyTreeNode = new DependencyTreeNode("root");
+                        convertDependencyNode(dependencyTreeLayers, dependencyTreeNode);
+                        dependencyLog.setDependencyTreeNode(dependencyTreeNode);
                     }
                     dependencyLog = new DependencyLog();
                     dependencyLog.setGroupId(moduleStartMatcher.group(1));
                     dependencyLog.setArtifactId(moduleStartMatcher.group(2));
-                    dependencyLayers.clear();
+                    dependencyTreeLayers.clear();
                 } else if (moduleEndPattern.matcher(line).find() && moduleScanFlag) {
                     dependencyLogs.add(dependencyLog);
-                    DependencyNode dependencyNode = new DependencyNode();
-                    convertDependencyNode(dependencyLayers, dependencyNode);
-                    dependencyLog.setDependencyNode(dependencyNode);
+                    DependencyTreeNode dependencyTreeNode = new DependencyTreeNode();
+                    convertDependencyNode(dependencyTreeLayers, dependencyTreeNode);
+                    dependencyLog.setDependencyTreeNode(dependencyTreeNode);
                     break;
                 }
                 if (null != dependencyLog && line.startsWith("[INFO] " + dependencyLog.getGroupId() + ":" + dependencyLog.getArtifactId())) {
                     dependencyScanFlag = true;
                 } else if (null != dependencyLog && dependencyScanFlag) {
                     if (!line.trim().equals("[INFO]")) {
-                        dependencyLayers.offer(new DependencyLayer(
+                        dependencyTreeLayers.offer(new DependencyTreeLayer(
                                 StrUtil.computeCharNum(line, '|'),
                                 line.substring(line.lastIndexOf(" "))));
                     }
@@ -118,22 +141,22 @@ public class MavenService implements IMavenService {
         return dependencyLogs;
     }
 
-    private void convertDependencyNode(Queue<DependencyLayer> dependencyLayers, DependencyNode parent) {
-        if (0 == dependencyLayers.size()) return;
-        List<DependencyNode> subDependencyNodes = new ArrayList<>();
-        DependencyLayer firstDependencyLayer = dependencyLayers.peek();
+    private void convertDependencyNode(Queue<DependencyTreeLayer> dependencyTreeLayers, DependencyTreeNode parent) {
+        if (0 == dependencyTreeLayers.size()) return;
+        List<DependencyTreeNode> subDependencyTreeNodes = new ArrayList<>();
+        DependencyTreeLayer firstDependencyTreeLayer = dependencyTreeLayers.peek();
         Boolean flag = true;
         while (flag) {
-            DependencyLayer currentDependencyLayer = dependencyLayers.peek();
-            if (null != currentDependencyLayer) {
-                if (currentDependencyLayer.getLayer().equals(firstDependencyLayer.getLayer())) {
-                    dependencyLayers.poll();
-                    subDependencyNodes.add(new DependencyNode(currentDependencyLayer.getPackageName(), null));
-                } else if (currentDependencyLayer.getLayer() > firstDependencyLayer.getLayer()) {
-                    convertDependencyNode(dependencyLayers, subDependencyNodes.get(subDependencyNodes.size() - 1));
+            DependencyTreeLayer currentDependencyTreeLayer = dependencyTreeLayers.peek();
+            if (null != currentDependencyTreeLayer) {
+                if (currentDependencyTreeLayer.getLayer().equals(firstDependencyTreeLayer.getLayer())) {
+                    dependencyTreeLayers.poll();
+                    subDependencyTreeNodes.add(new DependencyTreeNode(currentDependencyTreeLayer.getPackageName(), null));
+                } else if (currentDependencyTreeLayer.getLayer() > firstDependencyTreeLayer.getLayer()) {
+                    convertDependencyNode(dependencyTreeLayers, subDependencyTreeNodes.get(subDependencyTreeNodes.size() - 1));
                 } else flag = false;
             } else flag = false;
         }
-        parent.setChildren(subDependencyNodes);
+        parent.setChildren(subDependencyTreeNodes);
     }
 }
