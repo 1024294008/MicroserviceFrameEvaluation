@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DependencyLog {
+public class DependencyTreeLog {
     private String groupId;
     private String artifactId;
     private DependencyTreeNode dependencyTreeNode;
