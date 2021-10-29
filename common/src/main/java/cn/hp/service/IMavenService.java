@@ -1,5 +1,6 @@
 package cn.hp.service;
 
+import cn.hp.entity.DependencyAnalyzeLog;
 import cn.hp.entity.DependencyTreeLog;
 import cn.hp.entity.Module;
 
@@ -10,5 +11,5 @@ public interface IMavenService {
 
     List<DependencyTreeLog> resolveDependencyTreeIncludes(Module module, String packageName);
 
-    List<String> resolveUnusedDependencies(Module module);
+    List<DependencyAnalyzeLog> resolveUnusedDependencies(Module module);
 }
