@@ -149,7 +149,7 @@ public class MavenService implements IMavenService {
                 if (null != dependencyTreeLog && line.startsWith("[INFO] " + dependencyTreeLog.getGroupId() + ":" + dependencyTreeLog.getArtifactId())) {
                     dependencyScanFlag = true;
                 } else if (null != dependencyTreeLog && dependencyScanFlag) {
-                    if (line.trim().startsWith("[INFO]")) {
+                    if (line.trim().startsWith("[INFO]") && !line.trim().equals("[INFO]")) {
                         dependencyTreeLayers.offer(new DependencyTreeLayer(
                                 StrUtil.computeCharNum(line, '|'),
                                 line.substring(line.lastIndexOf(" ")).trim()));
