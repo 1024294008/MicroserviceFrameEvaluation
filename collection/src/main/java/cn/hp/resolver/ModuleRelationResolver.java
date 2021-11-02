@@ -21,6 +21,14 @@ public class ModuleRelationResolver {
         Module topModule = ModuleUtil.searchTopModule(modules);
 
         List<DependencyTreeLog> dependencyTreeLogs = mavenService.resolveDependencyTree(topModule);
+        List<DependencyAnalyzeLog> dependencyAnalyzeLogs = mavenService.resolveUnusedDependencies(topModule);
+        Map<String, DependencyAnalyzeLog> dependencyAnalyzeLogMap = new HashMap<>();
+        for (DependencyAnalyzeLog dependencyAnalyzeLog: dependencyAnalyzeLogs) {
+            dependencyAnalyzeLogMap.put(
+                    dependencyAnalyzeLog.getGroupId() + ":" + dependencyAnalyzeLog.getArtifactId(),
+                    dependencyAnalyzeLog
+            );
+        }
 
         Map<String, ModuleNode> moduleNodeMap = new HashMap<>();
 
@@ -35,18 +43,42 @@ public class ModuleRelationResolver {
             String packageName = dependencyTreeLog.getGroupId() + ":" + dependencyTreeLog.getArtifactId();
             if (moduleNodeMap.containsKey(packageName)) {
                 ModuleNode moduleNode = moduleNodeMap.get(packageName);
-                moduleNode.setChildren(extractChildren(dependencyTreeLog, moduleNodeMap));
+                Module module = moduleNode.getModule();
+
+                if (dependencyAnalyzeLogMap.containsKey(module.getGroupId() + ":" + module.getArtifactId())) {
+                    System.out.println(module.getArtifactId());
+                    moduleNode.setChildren(extractChildren(
+                            dependencyTreeLog,
+                            dependencyAnalyzeLogMap.get(module.getGroupId() + ":" + module.getArtifactId()),
+                            moduleNodeMap)
+                    );
+                } else {
+                    moduleNode.setChildren(extractChildren(dependencyTreeLog, new DependencyAnalyzeLog(null, null, new ArrayList<>()) ,moduleNodeMap));
+                }
             }
         }
         return moduleNodes;
     }
 
-    private List<ModuleNode> extractChildren(DependencyTreeLog dependencyTreeLog, Map<String, ModuleNode> moduleNodeMap) {
+    private List<ModuleNode> extractChildren(
+            DependencyTreeLog dependencyTreeLog,
+            DependencyAnalyzeLog dependencyAnalyzeLog,
+            Map<String, ModuleNode> moduleNodeMap
+    ) {
         List<ModuleNode> moduleNodes = new ArrayList<>();
         List<DependencyTreeNode> children = dependencyTreeLog.getDependencyTreeNode().getChildren();
+
+        List<String> unusedDependencies = dependencyAnalyzeLog.getUnusedDependencies();
+        Map<String, Boolean> unusedDependencyMap = new HashMap<>();
+        for (String unusedDependency: unusedDependencies) {
+            unusedDependencyMap.put(unusedDependency, true);
+        }
+
         for (DependencyTreeNode dependencyTreeNode: children) {
             String[] sections = dependencyTreeNode.getPackageName().split(":");
-            if (sections.length >= 2 && moduleNodeMap.containsKey(sections[0] + ":" + sections[1])) {
+            System.out.println(dependencyTreeNode.getPackageName());
+            System.out.println(unusedDependencyMap.keySet());
+            if (sections.length >= 2 && !unusedDependencyMap.containsKey(dependencyTreeNode.getPackageName()) && moduleNodeMap.containsKey(sections[0] + ":" + sections[1])) {
                 moduleNodes.add(moduleNodeMap.get(sections[0] + ":" + sections[1]));
             }
         }
