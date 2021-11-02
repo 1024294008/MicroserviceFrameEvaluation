@@ -69,7 +69,7 @@ public class ModuleResolver {
                 packageType = PackageType.Pom;
             module.setPackageType(packageType);
 
-            module.setLocation(pomFile);
+            module.setLocation(pomFile.getParentFile());
         } catch (Exception e) {
             e.printStackTrace();
         }

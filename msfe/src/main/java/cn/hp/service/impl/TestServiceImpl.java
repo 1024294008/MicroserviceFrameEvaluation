@@ -1,6 +1,8 @@
 package cn.hp.service.impl;
 
 import cn.hp.entity.Module;
+import cn.hp.entity.ModuleNode;
+import cn.hp.resolver.ModuleRelationResolver;
 import cn.hp.resolver.ModuleResolver;
 import cn.hp.service.ITestService;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,11 +10,15 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.List;
 
 @Service
 public class TestServiceImpl implements ITestService {
     @Resource
     private ModuleResolver moduleResolver;
+
+    @Resource
+    private ModuleRelationResolver moduleRelationResolver;
 
     @Resource
     private MavenService mavenService;
@@ -22,9 +28,14 @@ public class TestServiceImpl implements ITestService {
 
     @Override
     public void test() {
-        Module module = new Module();
-        module.setLocation(new File(projectPath));
+//        Module module = new Module();
+//        module.setLocation(new File(projectPath));
 //        mavenService.resolveDependencyTreeIncludes(module, "cn.hp.framedetect:collection");
-        System.out.println(mavenService.resolveUnusedDependencies(module));
+//        System.out.println(mavenService.resolveUnusedDependencies(module));
+        List<Module> modules = moduleResolver.resolveModule(new File(projectPath));
+        List<ModuleNode> moduleNodes = moduleRelationResolver.resolveModuleRelation(modules);
+        for (ModuleNode moduleNode: moduleNodes) {
+            System.out.println(moduleNode);
+        }
     }
 }

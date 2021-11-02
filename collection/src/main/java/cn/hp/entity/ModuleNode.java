@@ -2,11 +2,12 @@ package cn.hp.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ModuleNode {
     private Module module;
-    private ModuleNode left;
-    private ModuleNode right;
+    private List<ModuleNode> children;
 
     public ModuleNode(Module module) {
         this.module = module;

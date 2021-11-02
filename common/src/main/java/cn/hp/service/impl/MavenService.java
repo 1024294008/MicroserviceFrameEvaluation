@@ -152,7 +152,7 @@ public class MavenService implements IMavenService {
                     if (line.trim().startsWith("[INFO]")) {
                         dependencyTreeLayers.offer(new DependencyTreeLayer(
                                 StrUtil.computeCharNum(line, '|'),
-                                line.substring(line.lastIndexOf(" "))));
+                                line.substring(line.lastIndexOf(" ")).trim()));
                     }
                 }
             }
