@@ -141,7 +141,7 @@ public class MavenService implements IMavenService {
                     dependencyTreeLayers.clear();
                 } else if (moduleEndPattern.matcher(line).find() && moduleScanFlag) {
                     dependencyTreeLogs.add(dependencyTreeLog);
-                    DependencyTreeNode dependencyTreeNode = new DependencyTreeNode();
+                    DependencyTreeNode dependencyTreeNode = new DependencyTreeNode("root");
                     convertDependencyTreeNode(dependencyTreeLayers, dependencyTreeNode);
                     dependencyTreeLog.setDependencyTreeNode(dependencyTreeNode);
                     break;
