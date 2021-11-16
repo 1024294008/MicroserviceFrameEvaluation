@@ -1,27 +1,23 @@
 package cn.hp.resolver;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.visitor.VoidVisitorAdapter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EntryASTVisitor extends ASTVisitor {
+public class EntryASTVisitor extends VoidVisitorAdapter<Void> {
     private MethodDeclaration entryNode;
 
     @Override
-    public boolean visit(MethodDeclaration node) {
-        if (node.getName().toString().equals("main")
-                && node.getReturnType2().toString().equals("void")
-                && 1 == node.parameters().size()
-                && 2 == node.modifiers().size()
-                && node.modifiers().get(0).toString().equals("public")
-                && node.modifiers().get(1).toString().equals("static")) {
-            String[] parameters = node.parameters().get(0).toString().split(" ");
-            if (2 == parameters.length && parameters[0].equals("String[]")) {
+    public void visit(MethodDeclaration node, Void arg) {
+        if (node.getName().equals("main")
+                && node.getType().toString().equals("void")
+                && 1 == node.getParameters().size()
+                && 9 == node.getModifiers()) {
+            if (node.getParameters().get(0).getType().toString().equals("String[]")) {
                 this.entryNode = node;
             }
         }
-        return true;
     }
 
     public MethodDeclaration getEntryNode() {
