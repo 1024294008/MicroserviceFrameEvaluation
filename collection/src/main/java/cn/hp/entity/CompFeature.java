@@ -12,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CompFeature {
     private ServiceComponent serviceComponent;
+    private DependencyType dependencyType;
     private List<String> dependenciesStack;
 }

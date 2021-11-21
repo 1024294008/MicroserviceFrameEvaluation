@@ -4,6 +4,7 @@ import cn.hp.bean.ServiceComponent;
 import cn.hp.bean.ServiceComponentRegistry;
 import cn.hp.entity.*;
 import cn.hp.service.IMavenService;
+import cn.hp.util.ModuleUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,10 +24,12 @@ public class CompResolver {
         if (null == serviceComponentRegistryMap) serviceComponentRegistryMap = obtainServiceComponentRegistryMap();
         List<CompFeature> compFeatures = new ArrayList<>();
         List<DependencyTreeLog> dependencyTreeLogs = mavenService.resolveDependencyTree(module);
+        List<DependencyAnalyzeLog> dependencyAnalyzeLogs = mavenService.resolveUnusedDependencies(module);
+        List<String> unusedDependencies = ModuleUtil.obtainTargetDependencyAnalyzeLog(module, dependencyAnalyzeLogs).getUnusedDependencies();
+
         for (DependencyTreeLog dependencyTreeLog: dependencyTreeLogs) {
-            System.out.println(dependencyTreeLog);
             if (dependencyTreeLog.getGroupId().equalsIgnoreCase(module.getGroupId()) && dependencyTreeLog.getArtifactId().equalsIgnoreCase(module.getArtifactId())) {
-                traverseTreeNode(dependencyTreeLog.getDependencyTreeNode(), new Stack<>(), compFeatures);
+                traverseTreeNode(dependencyTreeLog.getDependencyTreeNode(), new Stack<>(), compFeatures, unusedDependencies, false);
             }
         }
         return compFeatures;
@@ -46,11 +49,17 @@ public class CompResolver {
         return serviceComponentRegistryMap;
     }
 
-    private void traverseTreeNode(DependencyTreeNode dependencyTreeNode, Stack<String> stack, List<CompFeature> compFeatures) {
+    private void traverseTreeNode(
+            DependencyTreeNode dependencyTreeNode,
+            Stack<String> stack,
+            List<CompFeature> compFeatures,
+            List<String> unusedDependencies,
+            Boolean unusedFlag
+    ) {
         if (null == dependencyTreeNode) return;
         String rawPackageName = dependencyTreeNode.getPackageName();
-        if (null == rawPackageName) System.out.println(dependencyTreeNode);
-        System.out.println(rawPackageName);
+        if (null == rawPackageName) return;
+        if (unusedDependencies.contains(rawPackageName)) unusedFlag = true;
         stack.push(rawPackageName);
         String[] rawPackageSections = rawPackageName.split(":");
         if (rawPackageSections.length >= 4) {
@@ -58,13 +67,13 @@ public class CompResolver {
             if (!serviceComponentRegistryMap.containsKey(packageName))
                 packageName = rawPackageSections[0] + ":" + rawPackageSections[1] + ":" + rawPackageSections[3];
             if (serviceComponentRegistryMap.containsKey(packageName)) {
-                compFeatures.add(new CompFeature(serviceComponentRegistryMap.get(packageName), new ArrayList<>(stack)));
+                compFeatures.add(new CompFeature(serviceComponentRegistryMap.get(packageName), unusedFlag ? DependencyType.UnusedJar : DependencyType.UsedJar,new ArrayList<>(stack)));
             }
         }
         List<DependencyTreeNode> children = dependencyTreeNode.getChildren();
         if (null != children && 0 < children.size()) {
             for (DependencyTreeNode child: children) {
-                traverseTreeNode(child, stack, compFeatures);
+                traverseTreeNode(child, stack, compFeatures, unusedDependencies, unusedFlag);
             }
         }
         stack.pop();

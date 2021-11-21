@@ -1,7 +1,9 @@
 package cn.hp.util;
 
+import cn.hp.entity.DependencyAnalyzeLog;
 import cn.hp.entity.Module;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleUtil {
@@ -16,5 +18,17 @@ public class ModuleUtil {
             }
         }
         return topModule;
+    }
+
+    public static DependencyAnalyzeLog obtainTargetDependencyAnalyzeLog(Module module, List<DependencyAnalyzeLog> dependencyAnalyzeLogs) {
+        for (DependencyAnalyzeLog dependencyAnalyzeLog: dependencyAnalyzeLogs) {
+            if (module.getGroupId().equals(dependencyAnalyzeLog.getGroupId())
+                    && module.getArtifactId().equals(dependencyAnalyzeLog.getArtifactId())) {
+                return dependencyAnalyzeLog;
+            }
+        }
+        DependencyAnalyzeLog dependencyAnalyzeLog = new DependencyAnalyzeLog();
+        dependencyAnalyzeLog.setUnusedDependencies(new ArrayList<>());
+        return dependencyAnalyzeLog;
     }
 }
