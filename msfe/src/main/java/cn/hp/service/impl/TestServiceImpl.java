@@ -40,12 +40,12 @@ public class TestServiceImpl implements ITestService {
 
     @Override
     public void test() {
-        File file = new File("D:\\Projects\\dev\\microservice-frame-evaluation\\msfe\\src\\main\\java\\cn\\hp\\service\\ITestService.java");
-        System.out.println(astResolver.resolveServerEntry(file));
-//        Module module = new Module();
-//        module.setLocation(new File(projectPath));
-//        module.setGroupId("cn.hp.framedetect");
-//        module.setArtifactId("msfe");
+//        File file = new File("D:\\Projects\\dev\\microservice-frame-evaluation\\msfe\\src\\main\\java\\cn\\hp\\service\\ITestService.java");
+//        System.out.println(astResolver.resolveServerEntry(file));
+        Module module = new Module();
+        module.setLocation(new File(projectPath));
+        module.setGroupId("cn.hp.framedetect");
+        module.setArtifactId("msfe");
 //        mavenService.resolveDependencyTreeIncludes(module, "cn.hp.framedetect:collection");
 //        System.out.println(mavenService.resolveUnusedDependencies(module));
 //        List<Module> modules = moduleResolver.resolveModule(new File(projectPath));
@@ -53,7 +53,7 @@ public class TestServiceImpl implements ITestService {
 //        for (ModuleNode moduleNode: moduleNodes) {
 //            System.out.println(moduleNode);
 //        }
+        System.out.println(compResolver.resolveComp(module));
 //        System.out.println(compResolver.resolveComp(module));
     }
-
 }
