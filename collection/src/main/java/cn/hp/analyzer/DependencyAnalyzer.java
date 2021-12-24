@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class DependencyAnalyzer {
-    @Resource(name = "dynamicMavenService")
+    @Resource(name = "staticMavenService")
     private IMavenService mavenService;
 
     public DependencyFeature resolveDependency(ModuleNode moduleNode, List<ModuleFeature> moduleFeatures) {
@@ -25,7 +25,7 @@ public class DependencyAnalyzer {
 
         DependencyFeature dependencyFeature = new DependencyFeature(
                 moduleNode.getModule().getGroupId() + ":"
-                + moduleNode.getModule().getArtifactId() + ":",
+                + moduleNode.getModule().getArtifactId(),
                 DependencyType.UsedModule,
                 new ArrayList<>()
         );

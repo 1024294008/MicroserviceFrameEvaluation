@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 public class ModuleRelationResolver {
-    @Resource(name = "dynamicMavenService")
+    @Resource(name = "staticMavenService")
     private IMavenService mavenService;
 
     public List<ModuleNode> resolveModuleRelation(List<Module> modules) {

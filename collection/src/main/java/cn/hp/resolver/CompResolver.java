@@ -16,7 +16,7 @@ public class CompResolver {
     @Resource
     private ServiceComponentRegistry serviceComponentRegistry;
 
-    @Resource(name = "dynamicMavenService")
+    @Resource(name = "staticMavenService")
     private IMavenService mavenService;
 
     public List<DependencyFeature> resolveComp(Module module) {

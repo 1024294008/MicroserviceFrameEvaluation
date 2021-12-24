@@ -1,6 +1,5 @@
 package cn.hp.resolver;
 
-import cn.hp.bean.ProjectInfo;
 import cn.hp.entity.*;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,6 @@ public class ModuleScanner {
 
     @Resource
     private CompResolver compResolver;
-
-    @Resource
-    private ProjectInfo projectInfo;
 
     public ModuleFeature scanModule(Module module) {
         ModuleFeature moduleFeature = new ModuleFeature();
@@ -73,7 +69,7 @@ public class ModuleScanner {
             }
 
             List<InterfaceFeature> interfaceFeatures = astResolver.getInterfaceFeatures();
-            if (null != interfaceFeatures && 0 < interfaceFeatures.size()) {
+            if (null != interfaceFeatures) {
                 List<InterfaceFeature> moduleInterfaceFeatures = moduleFeature.getInterfaceFeatures();
                 if (null == moduleInterfaceFeatures) {
                     moduleInterfaceFeatures = new ArrayList<>();

@@ -5,6 +5,11 @@ service-component-registry:
       artifactId: spring-cloud-netflix-eureka-client
       version: x
       description: Eureka客户端
+    - type: SERVICE_RAD
+      groupId: org.springframework.cloud
+      artifactId: spring-cloud-starter-eureka
+      version: x
+      description: Eureka客户端
     - type: SERVICE_CALL
       groupId: org.springframework.cloud
       artifactId: spring-cloud-starter-ribbon
