@@ -3,6 +3,7 @@ package cn.hp.service.impl;
 import cn.hp.bean.MavenSetting;
 import cn.hp.entity.*;
 import cn.hp.service.IMavenService;
+import cn.hp.util.ModuleUtil;
 import cn.hp.util.StrUtil;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -19,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class MavenService implements IMavenService {
+public class DynamicMavenService implements IMavenService {
     @Resource
     private MavenSetting mavenSetting;
 
@@ -42,7 +43,6 @@ public class MavenService implements IMavenService {
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
 
-    @Override
     public List<DependencyTreeLog> resolveDependencyTree(Module module) {
         BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree");
         List<DependencyTreeLog> dependencyTreeLogs = convertDependencyTreeLog(bufferedReader);
@@ -54,7 +54,6 @@ public class MavenService implements IMavenService {
         return dependencyTreeLogs;
     }
 
-    @Override
     public List<DependencyTreeLog> resolveDependencyTreeIncludes(Module module, String packageName) {
         BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree -Dverbose -Dincludes=" + packageName);
         List<DependencyTreeLog> dependencyTreeLogs = convertDependencyTreeLog(bufferedReader);
@@ -67,9 +66,51 @@ public class MavenService implements IMavenService {
     }
 
     @Override
-    public List<DependencyAnalyzeLog> resolveUnusedDependencies(Module module) {
+    public List<String> resolveDependencyList(Module module) {
+        BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree");
+        List<String> dependencyList = new ArrayList<>();
+        if (null == bufferedReader) return dependencyList;
+        try {
+            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+                if (line.startsWith("[INFO] ")) {
+                    String[] lines = line.split(" ");
+                    line = lines[lines.length - 1];
+                    if (line.substring(line.lastIndexOf(":") + 1).matches("system|runtime|compile|test|provided")) {
+                        dependencyList.add(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dependencyList;
+    }
+
+    @Override
+    public List<String> resolveTopDependencyList(Module module) {
+        BufferedReader bufferedReader = executeMavenCommand(module, "dependency:tree");
+        List<String> topDependencyList = new ArrayList<>();
+        if (null == bufferedReader) return topDependencyList;
+        try {
+            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+                if (line.startsWith("[INFO] \\- ") || line.startsWith("[INFO] +- ")) {
+                    String[] lines = line.split(" ");
+                    line = lines[lines.length - 1];
+                    if (line.substring(line.lastIndexOf(":") + 1).matches("system|runtime|compile|test|provided")) {
+                        topDependencyList.add(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topDependencyList;
+    }
+
+    @Override
+    public List<String> resolveUnusedDependencyList(Module module) {
         BufferedReader bufferedReader = executeMavenCommand(module, "dependency:analyze");
-        if (null == bufferedReader) return null;
+        if (null == bufferedReader) return new ArrayList<>();
         List<DependencyAnalyzeLog> dependencyAnalyzeLogs = new ArrayList<>();
         Pattern moduleStartPattern = Pattern.compile("^\\[INFO] -+< (.+):(.+) >-+$");
         Pattern moduleEndPattern = Pattern.compile("^\\[INFO] -+$");
@@ -111,7 +152,7 @@ public class MavenService implements IMavenService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dependencyAnalyzeLogs;
+        return ModuleUtil.obtainTargetDependencyAnalyzeLog(module, dependencyAnalyzeLogs).getUnusedDependencies();
     }
 
     private List<DependencyTreeLog> convertDependencyTreeLog(BufferedReader bufferedReader) {

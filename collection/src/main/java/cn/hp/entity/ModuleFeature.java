@@ -11,6 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ModuleFeature {
     private Module module;
+    private CodeFeature codeFeature;
     private ServiceFeature serviceFeature;
+    private List<InterfaceFeature> interfaceFeatures;
     private List<DependencyFeature> dependencyFeature;
+    private List<CallFeature> callFeatures;
 }

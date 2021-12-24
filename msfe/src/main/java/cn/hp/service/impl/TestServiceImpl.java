@@ -1,13 +1,14 @@
 package cn.hp.service.impl;
 
+import cn.hp.MicroFrameDetector;
 import cn.hp.bean.ServiceComponentRegistry;
+import cn.hp.entity.MicroFrameFeature;
 import cn.hp.entity.Module;
+import cn.hp.entity.ModuleFeature;
 import cn.hp.entity.ModuleNode;
-import cn.hp.resolver.ASTResolver;
-import cn.hp.resolver.CompResolver;
-import cn.hp.resolver.ModuleRelationResolver;
-import cn.hp.resolver.ModuleResolver;
+import cn.hp.resolver.*;
 import cn.hp.service.ITestService;
+import cn.hp.util.MicroServiceExecuteLog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,30 +31,46 @@ public class TestServiceImpl implements ITestService {
     private CompResolver compResolver;
 
     @Resource
-    private MavenService mavenService;
+    private MicroServiceResolver microServiceResolver;
+
+    @Resource
+    private DynamicMavenService dynamicMavenService;
+
+    @Resource
+    private MicroFrameDetector microFrameDetector;
 
     @Resource
     private ServiceComponentRegistry serviceComponentRegistry;
 
-    @Value("D:\\Projects\\dev\\microservice-frame-evaluation")
+    @Value("D:\\Projects\\dev\\sitech\\reverse-analysis-platform")
     private String projectPath;
 
     @Override
     public void test() {
 //        File file = new File("D:\\Projects\\dev\\microservice-frame-evaluation\\msfe\\src\\main\\java\\cn\\hp\\service\\ITestService.java");
 //        System.out.println(astResolver.resolveServerEntry(file));
-        Module module = new Module();
-        module.setLocation(new File(projectPath));
-        module.setGroupId("cn.hp.framedetect");
-        module.setArtifactId("msfe");
-//        mavenService.resolveDependencyTreeIncludes(module, "cn.hp.framedetect:collection");
-//        System.out.println(mavenService.resolveUnusedDependencies(module));
+//        Module module = new Module();
+//        module.setLocation(new File(projectPath, "msfe"));
+//        module.setGroupId("cn.hp.framedetect");
+//        module.setArtifactId("msfe");
+//        System.out.println(mavenService.resolveDependencyList(module));
 //        List<Module> modules = moduleResolver.resolveModule(new File(projectPath));
+//
+//        for (Module module: modules) {
+//            System.out.println(module);
+//        }
 //        List<ModuleNode> moduleNodes = moduleRelationResolver.resolveModuleRelation(modules);
 //        for (ModuleNode moduleNode: moduleNodes) {
 //            System.out.println(moduleNode);
 //        }
-        System.out.println(compResolver.resolveComp(module));
 //        System.out.println(compResolver.resolveComp(module));
+//        System.out.println(compResolver.resolveComp(module));
+        MicroFrameFeature microFrameFeature = microFrameDetector.getMicroFrameFeature(new File(projectPath));
+        System.out.println(microFrameFeature.getDependencyRelation());
+        List<ModuleFeature> moduleFeatures = microFrameFeature.getModuleFeatures();
+        for (ModuleFeature moduleFeature: moduleFeatures) {
+            System.out.println(moduleFeature);
+        }
+        System.out.println(MicroServiceExecuteLog.getLog());
     }
 }

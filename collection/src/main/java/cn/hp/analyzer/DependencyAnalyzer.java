@@ -1,8 +1,7 @@
-package cn.hp.resolver;
+package cn.hp.analyzer;
 
 import cn.hp.entity.*;
 import cn.hp.service.IMavenService;
-import cn.hp.util.ModuleUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,8 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DependencyResolver {
-    @Resource
+public class DependencyAnalyzer {
+    @Resource(name = "dynamicMavenService")
     private IMavenService mavenService;
 
     public DependencyFeature resolveDependency(ModuleNode moduleNode, List<ModuleFeature> moduleFeatures) {
@@ -38,10 +37,10 @@ public class DependencyResolver {
         if (null == moduleNode) return;
         Module module = moduleNode.getModule();
 
-        List<String> unusedDependencyList = ModuleUtil.obtainTargetDependencyAnalyzeLog(module, mavenService.resolveUnusedDependencies(module)).getUnusedDependencies();
+        List<String> unusedDependencyList = mavenService.resolveUnusedDependencyList(module);
         unusedDependencyList = unusedDependencyList.stream().map(unusedDependency -> {
             String[] sections = unusedDependency.split(":");
-            if (sections.length > 2) {
+            if (sections.length >= 2) {
                 return sections[0] + ":" + sections[1];
             }
             return "";
