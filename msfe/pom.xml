@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.hp.framedetect</groupId>
-            <artifactId>collection</artifactId>
+            <artifactId>recovery</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
