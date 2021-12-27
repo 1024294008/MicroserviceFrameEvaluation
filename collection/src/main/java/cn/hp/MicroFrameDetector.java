@@ -1,5 +1,6 @@
 package cn.hp;
 
+import cn.hp.analyzer.CallGraphAnalyzer;
 import cn.hp.analyzer.DependencyAnalyzer;
 import cn.hp.analyzer.DependencyGraphAnalyzer;
 import cn.hp.analyzer.LoopModuleNodeAnalyzer;
@@ -43,8 +44,8 @@ public class MicroFrameDetector {
     @Resource
     private DependencyGraphAnalyzer dependencyGraphAnalyzer;
 
-//    @Resource
-//    private CallGraphResolver callGraphResolver;
+    @Resource
+    private CallGraphAnalyzer callGraphAnalyzer;
 
     @Resource
     private ProjectInfo projectInfo;
@@ -99,7 +100,7 @@ public class MicroFrameDetector {
 
         microFrameFeature.setModuleFeatures(microServiceFeatures);
         microFrameFeature.setDependencyRelation(dependencyRelation);
-//        microFrameFeature.setCallGraph(callGraphResolver.resolveCallGraph(microServiceFeatures));
+        microFrameFeature.setCallGraph(callGraphAnalyzer.resolveCallGraph(microServiceFeatures));
 
         return microFrameFeature;
     }

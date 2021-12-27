@@ -2,10 +2,7 @@ package cn.hp.service.impl;
 
 import cn.hp.MicroFrameDetector;
 import cn.hp.bean.ServiceComponentRegistry;
-import cn.hp.entity.MicroFrameFeature;
-import cn.hp.entity.Module;
-import cn.hp.entity.ModuleFeature;
-import cn.hp.entity.ModuleNode;
+import cn.hp.entity.*;
 import cn.hp.resolver.*;
 import cn.hp.service.ITestService;
 import cn.hp.util.MicroServiceExecuteLog;
@@ -34,15 +31,13 @@ public class TestServiceImpl implements ITestService {
     private MicroServiceResolver microServiceResolver;
 
     @Resource
-    private DynamicMavenService dynamicMavenService;
-
-    @Resource
     private MicroFrameDetector microFrameDetector;
 
     @Resource
     private ServiceComponentRegistry serviceComponentRegistry;
 
-    @Value("D:\\Projects\\dev\\sitech\\reverse-analysis-platform")
+//    @Value("D:\\Projects\\dev\\sitech\\reverse-analysis-platform")
+    @Value("D:\\Projects\\dev\\sitech\\repository\\024317a2b99b4cdab853ad8d899d83e6_at-platform")
     private String projectPath;
 
     @Override
@@ -69,7 +64,15 @@ public class TestServiceImpl implements ITestService {
         System.out.println(microFrameFeature.getDependencyRelation());
         List<ModuleFeature> moduleFeatures = microFrameFeature.getModuleFeatures();
         for (ModuleFeature moduleFeature: moduleFeatures) {
-            System.out.println(moduleFeature);
+            System.out.println(moduleFeature.getServiceFeature());
+            System.out.println(moduleFeature.getCallFeatures());
+        }
+        CallGraph callGraph = microFrameFeature.getCallGraph();
+        for (CallGraphNode node: callGraph.getNodes()) {
+            System.out.println(node);
+        }
+        for (CallGraphEdge edge: callGraph.getEdges()) {
+            System.out.println(edge);
         }
         System.out.println(MicroServiceExecuteLog.getLog());
     }

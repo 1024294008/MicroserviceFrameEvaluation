@@ -1,6 +1,5 @@
 package cn.hp.resolver;
 
-import cn.hp.bean.ProjectInfo;
 import cn.hp.entity.FeignClientDescription;
 import cn.hp.entity.InterfaceFeature;
 import cn.hp.visitor.ControllerASTVisitor;
@@ -32,9 +31,6 @@ public class ASTResolver {
     private List<InterfaceFeature> interfaceFeatures;
 
     private FeignClientDescription feignClientDescription;
-
-    @Resource
-    private ProjectInfo projectInfo;
 
     public void resolveAST(File file) {
         try {

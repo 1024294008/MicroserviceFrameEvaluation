@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class CallFeature {
-    private String belongService;
-    private String apiName;
-    private List<String> callers;
+    private String service;
+    private String api;
 }

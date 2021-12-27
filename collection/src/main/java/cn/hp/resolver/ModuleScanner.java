@@ -51,54 +51,46 @@ public class ModuleScanner {
                 }
             }
         } else {
-            if (packageType.equals(PACKAGE_TYPE_CODE)) {
-                resolveCode(file, moduleFeature);
-                resolveFeignClient(file, moduleFeature);
-            }
+            if (packageType.equals(PACKAGE_TYPE_CODE)) resolveCode(file, moduleFeature);
             else if (packageType.equals(PACKAGE_TYPE_RESOURCE)) resolveResource(file, moduleFeature);
         }
     }
 
     private void resolveCode(File file, ModuleFeature moduleFeature) {
-        if (file.getName().endsWith(".java")) {
-            astResolver.resolveAST(file);
+        if (!file.getName().endsWith(".java")) return;
 
-            MethodDeclaration entryNode = astResolver.getEntryNode();
-            if (null != entryNode) {
-                moduleFeature.setCodeFeature(new CodeFeature(file, entryNode.toString()));
-            }
+        astResolver.resolveAST(file);
 
-            List<InterfaceFeature> interfaceFeatures = astResolver.getInterfaceFeatures();
-            if (null != interfaceFeatures) {
-                List<InterfaceFeature> moduleInterfaceFeatures = moduleFeature.getInterfaceFeatures();
-                if (null == moduleInterfaceFeatures) {
-                    moduleInterfaceFeatures = new ArrayList<>();
-                    moduleFeature.setInterfaceFeatures(moduleInterfaceFeatures);
-                }
-                moduleInterfaceFeatures.addAll(interfaceFeatures);
-            }
+        MethodDeclaration entryNode = astResolver.getEntryNode();
+        if (null != entryNode) {
+            moduleFeature.setCodeFeature(new CodeFeature(file, entryNode.toString()));
         }
-    }
 
-    private void resolveFeignClient(File file, ModuleFeature moduleFeature) {
+        List<InterfaceFeature> interfaceFeatures = astResolver.getInterfaceFeatures();
+        if (null != interfaceFeatures) {
+            List<InterfaceFeature> moduleInterfaceFeatures = moduleFeature.getInterfaceFeatures();
+            if (null == moduleInterfaceFeatures) {
+                moduleInterfaceFeatures = new ArrayList<>();
+                moduleFeature.setInterfaceFeatures(moduleInterfaceFeatures);
+            }
+            moduleInterfaceFeatures.addAll(interfaceFeatures);
+        }
+
         FeignClientDescription feignClientDescription = astResolver.getFeignClientDescription();
         List<CallFeature> callFeatures = moduleFeature.getCallFeatures();
         if (null == callFeatures) {
             callFeatures = new ArrayList<>();
             moduleFeature.setCallFeatures(callFeatures);
         }
-
         if (null != feignClientDescription) {
             List<FeignClientInterfaceDescription> feignClientInterfaceDescriptions = feignClientDescription.getInterfaces();
 
             for (FeignClientInterfaceDescription feignClientInterfaceDescription: feignClientInterfaceDescriptions) {
-                List<String> callerInterfaces = new ArrayList<>();
                 CallFeature callFeature = new CallFeature();
-                callFeature.setBelongService(feignClientDescription.getTargetServiceName());
-                callFeature.setApiName(feignClientInterfaceDescription.getRequestType()
-                    + " " + feignClientInterfaceDescription.getRequestPath());
-
-
+                callFeature.setService(feignClientDescription.getTargetServiceName().toUpperCase());
+                callFeature.setApi(feignClientInterfaceDescription.getRequestType()
+                        + " " + feignClientInterfaceDescription.getRequestPath());
+                callFeatures.add(callFeature);
             }
         }
     }

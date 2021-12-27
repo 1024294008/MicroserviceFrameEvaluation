@@ -14,5 +14,5 @@ public class MicroFrameFeature {
     private File projectFile;
     private List<ModuleFeature> moduleFeatures;
     private DependencyRelation dependencyRelation;
-//    private CallGraph callGraph;
+    private CallGraph callGraph;
 }

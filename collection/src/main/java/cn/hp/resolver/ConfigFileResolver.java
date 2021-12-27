@@ -56,7 +56,8 @@ public class ConfigFileResolver {
         try {
             is = new FileInputStream(configFile);
             Map yml = new Yaml().loadAs(is, Map.class);
-            serviceFeature.setName(YmlUtil.getProperty(yml, "spring.application.name"));
+            String appName = YmlUtil.getProperty(yml, "spring.application.name");
+            serviceFeature.setName(null == appName ? null : appName.toUpperCase());
             serviceFeature.setPort(YmlUtil.getProperty(yml, "server.port"));
             serviceFeature.setContext(YmlUtil.getProperty(yml, "server.context-path"));
             serviceFeature.setRegistryUrl(YmlUtil.getProperty(yml, "eureka.client.service-url.defaultZone"));
