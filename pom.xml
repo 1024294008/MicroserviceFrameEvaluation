@@ -11,6 +11,7 @@
     <module>msfe</module>
     <module>recovery</module>
     <module>common</module>
+    <module>evaluation</module>
   </modules>
 
   <packaging>pom</packaging>
