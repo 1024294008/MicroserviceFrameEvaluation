@@ -1,6 +1,7 @@
 package cn.hp.service.impl;
 
 import cn.hp.MicroFrameDetector;
+import cn.hp.adaptation.AdaptationEvaluator;
 import cn.hp.bean.ServiceComponentRegistry;
 import cn.hp.entity.*;
 import cn.hp.resolver.*;
@@ -35,6 +36,9 @@ public class TestServiceImpl implements ITestService {
 
     @Resource
     private ServiceComponentRegistry serviceComponentRegistry;
+
+    @Resource
+    private AdaptationEvaluator adaptationEvaluator;
 
 //    @Value("D:\\Projects\\dev\\sitech\\reverse-analysis-platform")
     @Value("D:\\Projects\\dev\\sitech\\repository\\024317a2b99b4cdab853ad8d899d83e6_at-platform")
@@ -75,5 +79,11 @@ public class TestServiceImpl implements ITestService {
             System.out.println(edge);
         }
         System.out.println(MicroServiceExecuteLog.getLog());
+
+        System.out.println(adaptationEvaluator.evaluateAdaptation(microFrameFeature));
+        for (ModuleFeature moduleFeature: moduleFeatures) {
+            System.out.println(moduleFeature.getServiceFeature().getName() + ": ");
+            System.out.println(adaptationEvaluator.evaluateImpact(moduleFeature, microFrameFeature));
+        }
     }
 }

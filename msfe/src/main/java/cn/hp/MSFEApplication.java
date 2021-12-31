@@ -1,6 +1,5 @@
 package cn.hp;
 
-import cn.hp.resolver.MicroServiceResolver;
 import cn.hp.service.ITestService;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
