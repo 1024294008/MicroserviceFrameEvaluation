@@ -2,6 +2,7 @@ package cn.hp.service.impl;
 
 import cn.hp.MicroFrameDetector;
 import cn.hp.adaptation.AdaptationEvaluator;
+import cn.hp.availability.AvailabilityEvaluator;
 import cn.hp.bean.ServiceComponentRegistry;
 import cn.hp.entity.*;
 import cn.hp.resolver.*;
@@ -40,6 +41,9 @@ public class TestServiceImpl implements ITestService {
     @Resource
     private AdaptationEvaluator adaptationEvaluator;
 
+    @Resource
+    private AvailabilityEvaluator availabilityEvaluator;
+
 //    @Value("D:\\Projects\\dev\\sitech\\reverse-analysis-platform")
     @Value("D:\\Projects\\dev\\sitech\\repository\\024317a2b99b4cdab853ad8d899d83e6_at-platform")
     private String projectPath;
@@ -65,25 +69,25 @@ public class TestServiceImpl implements ITestService {
 //        System.out.println(compResolver.resolveComp(module));
 //        System.out.println(compResolver.resolveComp(module));
         MicroFrameFeature microFrameFeature = microFrameDetector.getMicroFrameFeature(new File(projectPath));
-        System.out.println(microFrameFeature.getDependencyRelation());
         List<ModuleFeature> moduleFeatures = microFrameFeature.getModuleFeatures();
         for (ModuleFeature moduleFeature: moduleFeatures) {
+            System.out.println(moduleFeature.getModule().getArtifactId());
+            System.out.println(moduleFeature.getCodeFeature());
             System.out.println(moduleFeature.getServiceFeature());
+            System.out.println(moduleFeature.getInterfaceFeatures().size());
+            System.out.println(moduleFeature.getDependencyFeature());
             System.out.println(moduleFeature.getCallFeatures());
+            System.out.println("===============");
         }
-        CallGraph callGraph = microFrameFeature.getCallGraph();
-        for (CallGraphNode node: callGraph.getNodes()) {
-            System.out.println(node);
-        }
-        for (CallGraphEdge edge: callGraph.getEdges()) {
-            System.out.println(edge);
-        }
+
         System.out.println(MicroServiceExecuteLog.getLog());
 
-        System.out.println(adaptationEvaluator.evaluateAdaptation(microFrameFeature));
-        for (ModuleFeature moduleFeature: moduleFeatures) {
-            System.out.println(moduleFeature.getServiceFeature().getName() + ": ");
-            System.out.println(adaptationEvaluator.evaluateImpact(moduleFeature, microFrameFeature));
-        }
+//        System.out.println(adaptationEvaluator.evaluateAdaptation(microFrameFeature));
+//        for (ModuleFeature moduleFeature: moduleFeatures) {
+//            System.out.println(moduleFeature.getServiceFeature().getName() + ": ");
+//            System.out.println(adaptationEvaluator.evaluateImpact(moduleFeature, microFrameFeature));
+//        }
+//
+//        availabilityEvaluator.evaluateAvailability(microFrameFeature);
     }
 }

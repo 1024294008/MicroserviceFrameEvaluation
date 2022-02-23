@@ -56,9 +56,8 @@ public class MicroFrameDetector {
         MicroFrameFeature microFrameFeature = new MicroFrameFeature();
         List<ModuleFeature> moduleFeatures = new ArrayList<>();
         DependencyRelation dependencyRelation = new DependencyRelation();
-        microFrameFeature.setProjectFile(root);
 
-        MicroServiceExecuteLog.info("Generate the file graph.");
+        microFrameFeature.setProjectFile(root);
         projectInfo.setProjectFile(root);
 
         MicroServiceExecuteLog.info("Extract microservice features.");
@@ -93,7 +92,7 @@ public class MicroFrameDetector {
                 dependencyFeatures.add(dependencyFeature);
             }
 
-            DependencyFeature dependencyFeature = new DependencyFeature(root.getName(), DependencyType.Root, dependencyFeatures);
+            DependencyFeature dependencyFeature = new DependencyFeature(root.getName(), DependencyType.Root, dependencyFeatures, null);
             dependencyRelation.setType(DependencyRelationType.Tree);
             dependencyRelation.setDependencyFeature(dependencyFeature);
         }

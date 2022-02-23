@@ -1,22 +1,32 @@
 service-component-registry:
   service-components:
     - type: SERVICE_RAD
+      tag: eureka-client
       groupId: org.springframework.cloud
       artifactId: spring-cloud-netflix-eureka-client
       version: x
       description: Eureka客户端
     - type: SERVICE_RAD
+      tag: eureka-server
+      groupId: org.springframework.cloud
+      artifactId: spring-cloud-netflix-eureka-server
+      version: x
+      description: Eureka注册中心
+    - type: SERVICE_RAD
+      tag: eureka-client
       groupId: org.springframework.cloud
       artifactId: spring-cloud-starter-eureka
       version: x
       description: Eureka客户端
     - type: SERVICE_CALL
+      tag: ribbon
       groupId: org.springframework.cloud
       artifactId: spring-cloud-starter-ribbon
       version: x
       description: Ribbon
-    - type: SERVICE_RAD
-      groupId: org.springframework
-      artifactId: spring-webmvc
+    - type: SERVICE_CALL
+      tag: feign
+      groupId: org.springframework.cloud
+      artifactId: spring-cloud-starter-feign
       version: x
-      description: webmvc
+      description: Feign

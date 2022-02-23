@@ -96,7 +96,9 @@ public class ModuleScanner {
     }
 
     private void resolveResource(File file, ModuleFeature moduleFeature) {
-        moduleFeature.setServiceFeature(configFileResolver.resolveConfig(file));
+        ServiceFeature serviceFeature = configFileResolver.resolveConfig(file);
+        if (null != serviceFeature && null == serviceFeature.getName()) serviceFeature.setName(moduleFeature.getModule().getLocation().getName().toUpperCase());
+        moduleFeature.setServiceFeature(serviceFeature);
     }
 
     private void resolveComp(Module module, ModuleFeature moduleFeature) {

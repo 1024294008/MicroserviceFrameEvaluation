@@ -27,7 +27,8 @@ public class DependencyAnalyzer {
                 moduleNode.getModule().getGroupId() + ":"
                 + moduleNode.getModule().getArtifactId(),
                 DependencyType.UsedModule,
-                new ArrayList<>()
+                new ArrayList<>(),
+                null
         );
         traverseModuleNode(moduleNode, dependencyFeature, moduleModuleFeatureMap, true);
         return dependencyFeature;
@@ -53,7 +54,8 @@ public class DependencyAnalyzer {
                 parent.getChildren().add(new DependencyFeature(
                         dependencyFeature.getValue(),
                         DependencyType.UnusedJar,
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                        null
                 ));
             }
         }

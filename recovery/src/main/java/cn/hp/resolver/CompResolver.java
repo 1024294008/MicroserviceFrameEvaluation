@@ -65,6 +65,7 @@ public class CompResolver {
             if (serviceComponentRegistryMap.containsKey(packageName)) {
                 dependencyFeature = new DependencyFeature();
                 dependencyFeature.setValue(dependency);
+                dependencyFeature.setServiceComponent(serviceComponentRegistryMap.get(packageName));
                 if (unusedDependencyMap.containsKey(packageName))
                     dependencyFeature.setType(DependencyType.UnusedJar);
                 else dependencyFeature.setType(DependencyType.UsedJar);

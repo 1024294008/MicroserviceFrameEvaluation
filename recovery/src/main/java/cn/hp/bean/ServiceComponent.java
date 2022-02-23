@@ -13,4 +13,5 @@ public class ServiceComponent {
     private String artifactId;
     private String version;
     private String description;
+    private String tag;
 }
