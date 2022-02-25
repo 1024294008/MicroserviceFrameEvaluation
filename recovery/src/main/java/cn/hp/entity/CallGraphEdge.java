@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CallGraphEdge {
-    private String sourceService;
-    private String targetService;
-    private String apiInfo;
+    private CallGraphNode source;
+    private CallGraphNode target;
 }

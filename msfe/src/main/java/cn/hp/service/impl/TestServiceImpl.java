@@ -81,6 +81,7 @@ public class TestServiceImpl implements ITestService {
         }
 
         System.out.println(MicroServiceExecuteLog.getLog());
+        System.out.println(microFrameFeature.getDependencyRelation());
 
 //        System.out.println(adaptationEvaluator.evaluateAdaptation(microFrameFeature));
 //        for (ModuleFeature moduleFeature: moduleFeatures) {

@@ -9,18 +9,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.annotation.Resource;
 
 @SpringBootApplication
-public class MSFEApplication implements CommandLineRunner {
+public class MSFEApplication {
     @Resource
     private ITestService testServiceImp;
 
-    @Override
-    public void run(String... args) {
-        testServiceImp.test();
-    }
+//    @Override
+//    public void run(String... args) {
+//        testServiceImp.test();
+//    }
 
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(MSFEApplication.class);
-        springApplication.setBannerMode(Banner.Mode.OFF);
         springApplication.run(args);
     }
 }
