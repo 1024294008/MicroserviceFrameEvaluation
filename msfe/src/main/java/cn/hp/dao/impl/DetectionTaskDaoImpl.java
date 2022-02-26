@@ -41,4 +41,16 @@ public class DetectionTaskDaoImpl implements IDetectionTaskDao {
             return detectionTaskDTOS.get(0);
         else return null;
     }
+
+    @Override
+    public List<DetectionTaskDTO> list(Integer pageNum, Integer pageLimit) {
+        String sql = "select * from detection_task order by start_time desc limit " + (pageNum - 1) * pageLimit + "," + pageLimit;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(DetectionTaskDTO.class));
+    }
+
+    @Override
+    public Integer total() {
+        String sql = "select count(*) from detection_task";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
 }

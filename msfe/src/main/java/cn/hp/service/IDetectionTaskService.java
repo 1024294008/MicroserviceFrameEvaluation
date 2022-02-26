@@ -1,14 +1,10 @@
-package cn.hp.dao;
+package cn.hp.service;
 
 import cn.hp.entity.DetectionTaskDTO;
 
 import java.util.List;
 
-public interface IDetectionTaskDao {
-    void save(DetectionTaskDTO detectionTaskDTO);
-
-    DetectionTaskDTO findById(String id);
-
+public interface IDetectionTaskService {
     List<DetectionTaskDTO> list(Integer pageNum, Integer pageLimit);
 
     Integer total();

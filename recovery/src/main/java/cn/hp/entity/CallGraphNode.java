@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CallGraphNode {
-    private String belongService;
-    private String apiName;
+    private String service;
+    private List<String> apiList;
 }

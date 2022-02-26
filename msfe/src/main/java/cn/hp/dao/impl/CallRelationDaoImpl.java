@@ -50,8 +50,9 @@ public class CallRelationDaoImpl implements ICallRelationDao {
 
         for (CallGraphEdge edge: edges) {
             Document document = new Document();
-            document.put("source", callGraphNodeToDoc(edge.getSource()));
-            document.put("target", callGraphNodeToDoc(edge.getTarget()));
+            document.put("source", edge.getSourceService());
+            document.put("target", edge.getTargetService());
+            document.put("apiInfo", edge.getApiInfo());
             linkDocs.add(document);
         }
 
@@ -62,8 +63,8 @@ public class CallRelationDaoImpl implements ICallRelationDao {
 
     private Document callGraphNodeToDoc(CallGraphNode callGraphNode) {
         Document document = new Document();
-        document.put("belongService", callGraphNode.getBelongService());
-        document.put("apiName", callGraphNode.getApiName());
+        document.put("belongService", callGraphNode.getService());
+        document.put("apiList", callGraphNode.getApiList());
         return document;
     }
 }
