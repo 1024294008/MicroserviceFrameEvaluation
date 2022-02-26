@@ -34,6 +34,25 @@ public class DetectionTaskDaoImpl implements IDetectionTaskDao {
     }
 
     @Override
+    public void update(DetectionTaskDTO detectionTaskDTO) {
+        String sql = "update detection_task set name = ?,type = ?,status = ?,start_time = ?,end_time = ?,log = ?,git_url = ?,git_branch = ?,git_username = ?,git_password = ? where id = ?";
+        jdbcTemplate.update(
+                sql,
+                detectionTaskDTO.getName(),
+                detectionTaskDTO.getType(),
+                detectionTaskDTO.getStatus(),
+                detectionTaskDTO.getStartTime(),
+                detectionTaskDTO.getEndTime(),
+                detectionTaskDTO.getLog(),
+                detectionTaskDTO.getGitUrl(),
+                detectionTaskDTO.getGitBranch(),
+                detectionTaskDTO.getGitUsername(),
+                detectionTaskDTO.getGitPassword(),
+                detectionTaskDTO.getId()
+        );
+    }
+
+    @Override
     public DetectionTaskDTO findById(String id) {
         String sql = "select * from detection_task where id = ?";
         List<DetectionTaskDTO> detectionTaskDTOS = jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(DetectionTaskDTO.class));

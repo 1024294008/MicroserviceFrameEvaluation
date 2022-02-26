@@ -40,8 +40,4 @@ public interface IGitService {
      * @return 是否删除成功
      */
     Boolean deleteRepo(String repoName);
-
-    Iterable<RevCommit> log(String repoName);
-
-    List<Ref> tag(String repoName);
 }

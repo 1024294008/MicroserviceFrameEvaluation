@@ -1,3 +1,4 @@
 maven-setting:
-#    setting-file-path: C:\Users\13515\.m2\settings.xml
-    setting-file-path: D:\Environment\Maven\sitech\settings.xml
+    setting-file-path: C:\Users\13515\.m2\settings.xml
+git-setting:
+  local-rep-path: D:\Projects\dev\msfe-repository

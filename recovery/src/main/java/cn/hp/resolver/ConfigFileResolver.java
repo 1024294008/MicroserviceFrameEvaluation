@@ -19,10 +19,17 @@ public class ConfigFileResolver {
         if (!validateConfigFile(configFile)) return null;
         profile = null;
 
-        ServiceFeature serviceFeature = MergeUtil.mergeServiceFeature(
+        ServiceFeature serviceFeature1 = MergeUtil.mergeServiceFeature(
+                resolveYmlAndPropertiesFile(new File(configFile.getParent(), "bootstrap.yml")),
+                resolveYmlAndPropertiesFile(new File(configFile.getParent(), "bootstrap.properties"))
+        );
+
+        ServiceFeature serviceFeature2 = MergeUtil.mergeServiceFeature(
                 resolveYmlAndPropertiesFile(new File(configFile.getParent(), "application.yml")),
                 resolveYmlAndPropertiesFile(new File(configFile.getParent(), "application.properties"))
         );
+
+        ServiceFeature serviceFeature = MergeUtil.mergeServiceFeature(serviceFeature1, serviceFeature2);
         if (null != profile) {
             serviceFeature = MergeUtil.mergeServiceFeature(
                     serviceFeature,
@@ -40,7 +47,11 @@ public class ConfigFileResolver {
 
     private Boolean validateConfigFile(File configFile) {
         return configFile.exists() && configFile.isFile()
-                && (configFile.getName().equals("application.yml") || configFile.getName().equals("application.properties"));
+                && (configFile.getName().equals("application.yml")
+                || configFile.getName().equals("application.properties")
+                || configFile.getName().equals("bootstrap.yml")
+                || configFile.getName().equals("bootstrap.properties")
+        );
     }
 
     private ServiceFeature resolveYmlAndPropertiesFile(File configFile) {
