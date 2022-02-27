@@ -95,7 +95,8 @@ public class ConfigFileResolver {
             is = new FileInputStream(configFile);
             Properties properties = new Properties();
             properties.load(is);
-            serviceFeature.setName(properties.getProperty("spring.application.name"));
+            String appName = properties.getProperty("spring.application.name");
+            serviceFeature.setName(null == appName ? null : appName.toUpperCase());
             serviceFeature.setPort(properties.getProperty("server.port"));
             serviceFeature.setContext(properties.getProperty("server.context-path"));
             serviceFeature.setRegistryUrl(properties.getProperty("eureka.client.service-url.defaultZone"));

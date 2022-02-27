@@ -11,4 +11,8 @@ spring:
         database: msfe
         host: 127.0.0.1
         username: root
-        password: 123456
+        password: '123456'
+maven-setting:
+    setting-file-path: C:\Users\13515\.m2\settings.xml
+git-setting:
+  local-rep-path: D:\Projects\dev\msfe-repository

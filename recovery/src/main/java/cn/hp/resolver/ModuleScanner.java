@@ -32,9 +32,13 @@ public class ModuleScanner {
         scanFile(new File(module.getLocation(), microFrameSetting.getJavaPath()), moduleFeature, PACKAGE_TYPE_CODE);
 
         File resourceFile = new File(module.getLocation(), microFrameSetting.getResourcePath());
-        if (new File(resourceFile, "application.yml").exists()) {
+        if (new File(resourceFile, "bootstrap.yml").exists()) {
+            scanFile(new File(resourceFile, "bootstrap.yml"), moduleFeature, PACKAGE_TYPE_RESOURCE);
+        } else if (new File(resourceFile, "bootstrap.properties").exists())
+            scanFile(new File(resourceFile, "bootstrap.properties"), moduleFeature, PACKAGE_TYPE_RESOURCE);
+        else if (new File(resourceFile, "application.yml").exists())
             scanFile(new File(resourceFile, "application.yml"), moduleFeature, PACKAGE_TYPE_RESOURCE);
-        } else if (new File(resourceFile, "application.properties").exists())
+        else if (new File(resourceFile, "application.properties").exists())
             scanFile(new File(resourceFile, "application.properties"), moduleFeature, PACKAGE_TYPE_RESOURCE);
 
         resolveComp(module, moduleFeature);

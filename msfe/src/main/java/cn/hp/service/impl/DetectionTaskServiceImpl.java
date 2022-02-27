@@ -46,9 +46,12 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
         MicroServiceExecuteLog.init();
         MicroServiceExecuteLog.info("Start microservice pattern recognition...");
 
+        if (null == detectionTaskDTO.getGitUsername()) detectionTaskDTO.setGitUsername("");
+        if (null == detectionTaskDTO.getGitPassword()) detectionTaskDTO.setGitPassword("");
+
         String taskId = UUIDUtil.getUUID();
         detectionTaskDTO.setId(taskId);
-        detectionTaskDTO.setType(FrameType.Unknow.ordinal());
+        detectionTaskDTO.setType(FrameType.Unknown.ordinal());
         detectionTaskDTO.setStatus(DetectStatus.Execute.ordinal());
         detectionTaskDTO.setStartTime(new Date());
         save(detectionTaskDTO);
@@ -59,6 +62,7 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
             if (isPulled) {
                 MicroServiceExecuteLog.info("The remote repository was pulled successfully.");
                 File repo = repositoryService.findRepo(taskId);
+//                File repo = repositoryService.findRepo("0efb9bfb3dd0481da3c5a0f2e6b26151");
                 MicroFrameFeature microFrameFeature = microFrameDetector.getMicroFrameFeature(repo);
 
                 if (0 == microFrameFeature.getModuleFeatures().size()) {
@@ -69,8 +73,6 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
                     DependencyRelation dependencyRelation = microFrameFeature.getDependencyRelation();
                     if (dependencyRelation.getType().equals(DependencyRelationType.Tree)) {
                         DependencyFeature dependencyFeature = dependencyRelation.getDependencyFeature();
-                        String projectName = dependencyFeature.getValue();
-                        dependencyFeature.setValue(projectName.substring(projectName.indexOf("_") + 1));
                         dependencyRelationDao.save(taskId, dependencyFeature);
                     } else dependencyRelationDao.save(taskId, dependencyRelation.getDependencyGraph());
 
@@ -117,6 +119,7 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
                 detectionTaskDTO.setStatus(DetectStatus.Fail.ordinal());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             MicroServiceExecuteLog.error("The microservice features extract failed.");
             detectionTaskDTO.setStatus(DetectStatus.Fail.ordinal());
         } finally {

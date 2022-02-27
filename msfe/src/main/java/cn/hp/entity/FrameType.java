@@ -1,7 +1,7 @@
 package cn.hp.entity;
 
 public enum FrameType {
-    Unknow,
+    Unknown,
     Other,
     Microservice
 }

@@ -38,7 +38,7 @@ public class CallGraphAnalyzer {
 
                 if (!serviceNameList.contains(callFeature.getService())) {
                     serviceNameList.add(callFeature.getService());
-                    callGraphNodes.add(new CallGraphNode());
+                    callGraphNodes.add(new CallGraphNode(callFeature.getService(), new ArrayList<>()));
                 }
             }
         }
