@@ -5,6 +5,8 @@ import cn.hp.entity.DetectionTaskDTO;
 import java.util.List;
 
 public interface IDetectionTaskService {
+    DetectionTaskDTO findById(String id);
+
     void startMicroServiceDetect(DetectionTaskDTO detectionTaskDTO);
 
     List<DetectionTaskDTO> list(Integer pageNum, Integer pageLimit);

@@ -23,6 +23,13 @@ public class DetectionTaskController {
         return new MsfePageResponse<>(detectionTaskService.list(pageNum, pageLimit), pageNum, pageLimit, detectionTaskService.total());
     }
 
+    @GetMapping("/{id}")
+    public MsfeResponse<DetectionTaskDTO> get(
+            @PathVariable("id") String id
+    ) {
+        return new MsfeResponse<>(detectionTaskService.findById(id));
+    }
+
     @PostMapping("/start_detect")
     public MsfeResponse startMicroServiceDetect(@RequestBody DetectionTaskDTO detectionTaskDTO) {
         detectionTaskService.startMicroServiceDetect(detectionTaskDTO);

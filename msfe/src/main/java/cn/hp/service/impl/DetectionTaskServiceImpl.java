@@ -42,6 +42,11 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
     private ICallRelationDao callRelationDao;
 
     @Override
+    public DetectionTaskDTO findById(String id) {
+        return detectionTaskDao.findById(id);
+    }
+
+    @Override
     public void startMicroServiceDetect(DetectionTaskDTO detectionTaskDTO) {
         MicroServiceExecuteLog.init();
         MicroServiceExecuteLog.info("Start microservice pattern recognition...");
