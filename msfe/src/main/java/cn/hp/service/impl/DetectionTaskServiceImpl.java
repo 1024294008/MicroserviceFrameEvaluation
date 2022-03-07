@@ -112,7 +112,7 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
                     callRelationDao.save(taskId, microFrameFeature.getCallGraph());
                     detectionTaskDTO.setType(FrameType.Microservice.ordinal());
                 }
-                MicroServiceExecuteLog.info("End microservice pattern recognition");
+                MicroServiceExecuteLog.info("End microservice pattern recognition.");
                 detectionTaskDTO.setStatus(DetectStatus.Success.ordinal());
             } else {
                 MicroServiceExecuteLog.error("The remote repository pull failed.");

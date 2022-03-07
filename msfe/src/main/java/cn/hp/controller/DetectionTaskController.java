@@ -15,7 +15,7 @@ public class DetectionTaskController {
     @Resource
     private IDetectionTaskService detectionTaskService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public MsfePageResponse<List<DetectionTaskDTO>> list(
             @RequestParam("pageNum") Integer pageNum,
             @RequestParam("pageLimit") Integer pageLimit
