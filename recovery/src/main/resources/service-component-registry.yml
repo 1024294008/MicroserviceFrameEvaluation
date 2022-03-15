@@ -30,3 +30,15 @@ service-component-registry:
       artifactId: spring-cloud-starter-feign
       version: x
       description: Feign
+    - type: SECURITY_COMPONENT
+      tag: oauth2
+      groupId: org.springframework.cloud
+      artifactId: spring-cloud-starter-oauth2
+      version: x
+      description: Oauth2
+    - type: SECURITY_COMPONENT
+      tag: spring-security
+      groupId: org.springframework.boot
+      artifactId: spring-boot-starter-security
+      version: x
+      description: SpringSecurity

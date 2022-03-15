@@ -55,6 +55,7 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
         if (null == detectionTaskDTO.getGitPassword()) detectionTaskDTO.setGitPassword("");
 
         String taskId = UUIDUtil.getUUID();
+//        String taskId = "024317a2b99b4cdab853ad8d899d83e6";
         detectionTaskDTO.setId(taskId);
         detectionTaskDTO.setType(FrameType.Unknown.ordinal());
         detectionTaskDTO.setStatus(DetectStatus.Execute.ordinal());
