@@ -1,14 +1,18 @@
 package cn.hp.service.impl;
 
 import cn.hp.MicroFrameDetector;
+import cn.hp.adaptation.AdaptationEvaluator;
+import cn.hp.availability.CpaEvaluator;
+import cn.hp.availability.LoadBalanceDetector;
+import cn.hp.availability.ServiceRegistryDetector;
 import cn.hp.dao.ICallRelationDao;
 import cn.hp.dao.IDependencyRelationDao;
 import cn.hp.dao.IDetectionTaskDao;
 import cn.hp.entity.*;
-import cn.hp.service.IDetectionTaskService;
-import cn.hp.service.IInterfaceInfoService;
-import cn.hp.service.IMicroService;
-import cn.hp.service.IRepositoryService;
+import cn.hp.security.SecurityComponentDetector;
+import cn.hp.security.SelfInvocationDetector;
+import cn.hp.service.*;
+import cn.hp.util.ArrayToStrUtil;
 import cn.hp.util.MicroServiceExecuteLog;
 import cn.hp.util.UUIDUtil;
 import org.springframework.stereotype.Service;
@@ -40,6 +44,27 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
 
     @Resource
     private ICallRelationDao callRelationDao;
+
+    @Resource
+    private IQualityEvaluationService qualityEvaluationService;
+
+    @Resource
+    private LoadBalanceDetector loadBalanceDetector;
+
+    @Resource
+    private ServiceRegistryDetector serviceRegistryDetector;
+
+    @Resource
+    private CpaEvaluator cpaEvaluator;
+
+    @Resource
+    private AdaptationEvaluator adaptationEvaluator;
+
+    @Resource
+    private SecurityComponentDetector securityComponentDetector;
+
+    @Resource
+    private SelfInvocationDetector selfInvocationDetector;
 
     @Override
     public DetectionTaskDTO findById(String id) {
@@ -85,6 +110,9 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
                     MicroServiceExecuteLog.info("Store service detail to mysql.");
 
                     List<ModuleFeature> moduleFeatures = microFrameFeature.getModuleFeatures();
+                    String serviceRegistry = serviceRegistryDetector.detectServiceRegistry(microFrameFeature);
+                    String cpa = cpaEvaluator.evaluateCpa(serviceRegistry);
+
                     for (ModuleFeature moduleFeature: moduleFeatures) {
                         String msId = UUIDUtil.getUUID();
                         microService.save(new MicroServiceDTO(
@@ -110,6 +138,17 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
                                     interfaceFeature.getReturnResult()
                             ));
                         }
+
+                        qualityEvaluationService.save(new QualityEvaluationDTO(
+                                UUIDUtil.getUUID(),
+                                msId,
+                                adaptationEvaluator.evaluateImpact(moduleFeature, microFrameFeature),
+                                ArrayToStrUtil.transfer(securityComponentDetector.detectSecurityComponent(moduleFeature)),
+                                ArrayToStrUtil.transfer(selfInvocationDetector.detectSelfInvocation(moduleFeature, microFrameFeature.getCallGraph())),
+                                ArrayToStrUtil.transfer(loadBalanceDetector.detectLoadBalance(moduleFeature)),
+                                serviceRegistry,
+                                cpa
+                        ));
                     }
 
                     //将call feature存入mongodb

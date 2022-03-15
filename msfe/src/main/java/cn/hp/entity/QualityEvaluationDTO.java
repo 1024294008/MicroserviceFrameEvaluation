@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class QualityEvaluationDTO {
     private String id;
     private String msId;
-    private String adaptation;
+    private Double adaptation;
     private String securityComponent;
     private String selfInvocation;
     private String loadBalanceComponent;
