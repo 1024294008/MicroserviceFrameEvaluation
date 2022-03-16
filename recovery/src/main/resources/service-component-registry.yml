@@ -1,13 +1,13 @@
 service-component-registry:
   service-components:
     - type: SERVICE_RAD
-      tag: eureka-client
+      tag: eureka
       groupId: org.springframework.cloud
       artifactId: spring-cloud-netflix-eureka-client
       version: x
       description: Eureka客户端
     - type: SERVICE_RAD
-      tag: eureka-server
+      tag: eureka
       groupId: org.springframework.cloud
       artifactId: spring-cloud-netflix-eureka-server
       version: x

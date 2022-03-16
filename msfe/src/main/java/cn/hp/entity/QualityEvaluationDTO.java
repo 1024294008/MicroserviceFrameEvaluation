@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QualityEvaluationDTO {
     private String id;
-    private String msId;
+    private String taskId;
+    private String serviceName;
     private Double adaptation;
     private String securityComponent;
     private String selfInvocation;

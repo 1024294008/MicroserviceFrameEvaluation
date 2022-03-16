@@ -79,8 +79,8 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
         if (null == detectionTaskDTO.getGitUsername()) detectionTaskDTO.setGitUsername("");
         if (null == detectionTaskDTO.getGitPassword()) detectionTaskDTO.setGitPassword("");
 
-        String taskId = UUIDUtil.getUUID();
-//        String taskId = "024317a2b99b4cdab853ad8d899d83e6";
+//        String taskId = UUIDUtil.getUUID();
+        String taskId = "064317a2b99b4cdab853ad8d899d83e6";
         detectionTaskDTO.setId(taskId);
         detectionTaskDTO.setType(FrameType.Unknown.ordinal());
         detectionTaskDTO.setStatus(DetectStatus.Execute.ordinal());
@@ -89,8 +89,8 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
 
         try {
             MicroServiceExecuteLog.info("Pull or clone the remote repository...");
-            Boolean isPulled = repositoryService.updateRepo(detectionTaskDTO);
-            if (isPulled) {
+//            Boolean isPulled = repositoryService.updateRepo(detectionTaskDTO);
+            if (true) {
                 MicroServiceExecuteLog.info("The remote repository was pulled successfully.");
                 File repo = repositoryService.findRepo(taskId);
 //                File repo = repositoryService.findRepo("0efb9bfb3dd0481da3c5a0f2e6b26151");
@@ -141,7 +141,8 @@ public class DetectionTaskServiceImpl implements IDetectionTaskService {
 
                         qualityEvaluationService.save(new QualityEvaluationDTO(
                                 UUIDUtil.getUUID(),
-                                msId,
+                                taskId,
+                                moduleFeature.getServiceFeature().getName(),
                                 adaptationEvaluator.evaluateImpact(moduleFeature, microFrameFeature),
                                 ArrayToStrUtil.transfer(securityComponentDetector.detectSecurityComponent(moduleFeature)),
                                 ArrayToStrUtil.transfer(selfInvocationDetector.detectSelfInvocation(moduleFeature, microFrameFeature.getCallGraph())),

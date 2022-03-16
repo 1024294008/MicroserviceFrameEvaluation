@@ -6,6 +6,7 @@ import cn.hp.service.IQualityEvaluationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class QualityEvaluationServiceImpl implements IQualityEvaluationService {
@@ -18,7 +19,7 @@ public class QualityEvaluationServiceImpl implements IQualityEvaluationService {
     }
 
     @Override
-    public QualityEvaluationDTO findByMsId(String msId) {
-        return qualityEvaluationDao.findByMsId(msId);
+    public List<QualityEvaluationDTO> findByTaskId(String taskId) {
+        return qualityEvaluationDao.findByTaskId(taskId);
     }
 }

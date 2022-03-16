@@ -17,6 +17,7 @@ public class ServiceRegistryDetector {
         serviceRegistryTags = new ArrayList<>();
         serviceRegistryTags.add("eureka-server");
         serviceRegistryTags.add("eureka-client");
+        serviceRegistryTags.add("eureka");
         serviceRegistryTags.add("consul");
         serviceRegistryTags.add("zookeeper");
     }
@@ -29,7 +30,7 @@ public class ServiceRegistryDetector {
                 ServiceComponent serviceComponent = dependencyFeature.getServiceComponent();
                 if (serviceComponent.getType().equals("SERVICE_RAD")
                         && serviceRegistryTags.contains(serviceComponent.getTag())) {
-                    return serviceComponent.getType();
+                    return serviceComponent.getTag();
                 }
             }
         }

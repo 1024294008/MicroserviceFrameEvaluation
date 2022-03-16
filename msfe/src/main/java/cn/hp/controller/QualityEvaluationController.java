@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
-@RequestMapping("/quality_evaluation")
+@RequestMapping("/quality_evaluations")
 public class QualityEvaluationController {
     @Resource
     private IQualityEvaluationService qualityEvaluationService;
 
-    @GetMapping("/{ms_id}")
-    public MsfeResponse<QualityEvaluationDTO> get(@PathVariable("ms_id") String msId) {
-        return new MsfeResponse<>(qualityEvaluationService.findByMsId(msId));
+    @GetMapping("/{task_id}")
+    public MsfeResponse<List<QualityEvaluationDTO>> list(@PathVariable("task_id") String taskId) {
+        return new MsfeResponse<>(qualityEvaluationService.findByTaskId(taskId));
     }
 }

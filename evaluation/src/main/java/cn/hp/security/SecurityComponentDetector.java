@@ -27,7 +27,7 @@ public class SecurityComponentDetector {
         for (DependencyFeature dependencyFeature: dependencyFeatures) {
             ServiceComponent serviceComponent = dependencyFeature.getServiceComponent();
             if (securityComponentTags.contains(serviceComponent.getTag())) {
-                securityComponentSet.add(serviceComponent.getDescription());
+                securityComponentSet.add(serviceComponent.getTag());
             }
         }
         return new ArrayList<>(securityComponentSet);

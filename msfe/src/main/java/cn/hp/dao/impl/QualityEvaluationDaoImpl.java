@@ -16,11 +16,12 @@ public class QualityEvaluationDaoImpl implements IQualityEvaluationDao {
 
     @Override
     public void save(QualityEvaluationDTO qualityEvaluationDTO) {
-        String sql = "insert into quality_evaluation(id,ms_id,adaptation,security_component,self_invocation,load_balance_component,service_registry_center,cpa) values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into quality_evaluation(id,task_id,service_name,adaptation,security_component,self_invocation,load_balance_component,service_registry_center,cpa) values(?,?,?,?,?,?,?,?,?)";
         jdbcTemplate.update(
                 sql,
                 qualityEvaluationDTO.getId(),
-                qualityEvaluationDTO.getMsId(),
+                qualityEvaluationDTO.getTaskId(),
+                qualityEvaluationDTO.getServiceName(),
                 qualityEvaluationDTO.getAdaptation(),
                 qualityEvaluationDTO.getSecurityComponent(),
                 qualityEvaluationDTO.getSelfInvocation(),
@@ -31,11 +32,8 @@ public class QualityEvaluationDaoImpl implements IQualityEvaluationDao {
     }
 
     @Override
-    public QualityEvaluationDTO findByMsId(String msId) {
+    public List<QualityEvaluationDTO> findByTaskId(String taskId) {
         String sql = "select * from quality_evaluation where task_id = ?";
-        List<QualityEvaluationDTO> qualityEvaluationDTOS = jdbcTemplate.query(sql, new Object[]{msId}, new BeanPropertyRowMapper<>(QualityEvaluationDTO.class));
-        if (qualityEvaluationDTOS.size() > 0)
-            return qualityEvaluationDTOS.get(0);
-        return null;
+        return jdbcTemplate.query(sql, new Object[]{taskId}, new BeanPropertyRowMapper<>(QualityEvaluationDTO.class));
     }
 }
